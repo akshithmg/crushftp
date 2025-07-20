@@ -1,0 +1,30 @@
+variables:
+  TAG: "crushftp10.8.5.12.java.17"
+
+before_script:
+  - sudo docker info
+
+build_image:
+  script:
+    - echo "Downloading CrushFTP10.zip with retry and validation..."
+    - |
+      set -e
+      wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
+      echo "CrushFTP10.zip downloaded successfully."
+      echo "Validating CrushFTP10.zip integrity..."
+      unzip -t CrushFTP10.zip
+
+    - echo "Unzipping CrushFTP..."
+    - unzip -q CrushFTP10.zip -d build/
+
+    - echo "Setting proxy variables (if needed)..."
+    - echo "Running Docker builds with Tag [$TAG]..."
+
+    - sudo docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" ghcr.io
+    - sudo docker build -t ghcr.io/akshithmg/crushftp:$TAG .
+    - sudo docker push ghcr.io/akshithmg/crushftp:$TAG
+
+  tags:
+    - self-hosted
+    - bash
+    - linux
