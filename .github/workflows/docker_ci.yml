@@ -29,9 +29,7 @@ jobs:
           mkdir -p build/
 
       - name: Unzip CrushFTP and cleanup zip
-        run: |
-          unzip -o -q CrushFTP10.zip -d build/
-          rm -f CrushFTP10.zip
+        run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Docker Login
         run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
