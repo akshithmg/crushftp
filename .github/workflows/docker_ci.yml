@@ -18,21 +18,20 @@ jobs:
 
       - name: Download CrushFTP10.zip with retry and validation
         run: |
-          set -e
+          set -euo pipefail
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
-	  
-      - name: Prepare build directory
+
+      - name: Prepare clean build directory
         run: |
           rm -rf build/
           mkdir -p build/
 
-      - name: Unzip CrushFTP
-        run: unzip -q CrushFTP10.zip -d build/
-	 
-      - name: Clean up zip file
-        run: rm -f CrushFTP10.zip
+      - name: Unzip CrushFTP and cleanup zip
+        run: |
+          unzip -o -q CrushFTP10.zip -d build/
+          rm -f CrushFTP10.zip
 
       - name: Docker Login
         run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
