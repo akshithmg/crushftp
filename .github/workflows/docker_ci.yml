@@ -21,13 +21,13 @@ jobs:
           set -e
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
-          unzip -t CrushFTP10.zip
-	    
+          unzip -t CrushFTP10.zi
+      
       - name: Prepare build directory
         run: |
           rm -rf build/
           mkdir -p build/
-
+      
       - name: Unzip CrushFTP
         run: unzip -q CrushFTP10.zip -d build/
 	 
