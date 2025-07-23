@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Install Java 17, unzip, curl, and tzdata
-RUN apk update && apk --no-cache add openjdk17 unzip curl tzdata
+RUN apk update && apk --no-cache add openjdk21 unzip curl tzdata
 
 # Set timezone via ENV (optional, redundant with tzdata above)
 ENV TZ=Australia/Melbourne
