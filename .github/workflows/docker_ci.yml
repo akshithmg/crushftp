@@ -23,9 +23,6 @@ jobs:
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
 
-      - name: Move CrushFTP10.zip into build context
-        run: mv CrushFTP10.zip ./  # Ensures Docker can COPY it
-
       - name: Prepare clean build directory
         run: |
           rm -rf build/
