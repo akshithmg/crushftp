@@ -1,10 +1,10 @@
-name: Docker Build and Push
+name: Build CrushFTP DMZ Docker Image
 
 on:
   push:
     branches:
       - main
-
+      
 env:
   TAG: crushftp10.8.5.12.java.17
 
@@ -13,22 +13,22 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Clone repository into the GitHub Actions runner (Checkout repo) 
+        uses: actions/checkout@v4
 
-      - name: Download CrushFTP10.zip with retry and validation
+      - name: Download CrushFTP10.zip with retry and validation from crushftp.com
         run: |
           set -euo pipefail
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
       
-      - name: Prepare clean build directory
+      - name: Preparing clean build directory
         run: |
           rm -rf build/
           mkdir -p build/
       
-      - name: Unzip CrushFTP and cleanup zip
+      - name: Unzip CrushFTP10.zip and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Docker Login
