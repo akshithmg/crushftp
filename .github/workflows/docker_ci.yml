@@ -13,7 +13,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Clone repository into the GitHub Actions runner (Checkout repo) 
+      - name: Clone repository into the GitHub Actions runner 
         uses: actions/checkout@v4
 
       - name: Download CrushFTP10.zip with retry and validation from crushftp.com
@@ -28,7 +28,7 @@ jobs:
           rm -rf build/
           mkdir -p build/
       
-      - name: Unzip CrushFTP10.zip and cleanup zip file
+      - name: Unzip CrushFTP build and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Docker Login
