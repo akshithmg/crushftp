@@ -35,7 +35,7 @@ jobs:
         run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login ghcr.io -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
 
       - name: Build Podman image
-        run: podman build -t localhost:5000/crushftp:$TAG .
+        run: podman build -t 192.168.30.136:5000/crushftp:$TAG .
 
       - name: Push Podman image
-        run: podman push localhost:5000/crushftp:$TAG
+        run: podman push 192.168.30.136:5000/crushftp:$TAG
