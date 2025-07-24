@@ -31,11 +31,11 @@ jobs:
       - name: Unzip CrushFTP build and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
-      - name: Docker Login
+      - name: Podman Login
         run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login ghcr.io -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t localhost:5000/crushftp:$TAG .
+      - name: Build Podman image
+        run: podman build -t localhost:5000/crushftp:$TAG .
 
-      - name: Push Docker image
-        run: docker push localhost:5000/crushftp:$TAG
+      - name: Push Podman image
+        run: podman push localhost:5000/crushftp:$TAG
