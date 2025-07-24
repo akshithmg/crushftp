@@ -32,10 +32,10 @@ jobs:
         run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Podman Login
-        run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login ghcr.io -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
+        run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login $CI_REGISTRY -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
 
       - name: Build Podman image
-        run: podman build -t 192.168.30.136:5000/crushftp:$TAG .
+        run: podman build -t ${{ secrets.CI_REGISTRY }}/crushftp:$TAG .
 
       - name: Push Podman image
-        run: podman push --tls-verify=false 192.168.30.136:5000/crushftp:$TAG
+        run: podman push --tls-verify=false ${{ secrets.CI_REGISTRY }}/crushftp:$TAG
