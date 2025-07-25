@@ -7,7 +7,7 @@ on:
 
 env:
   TAG: crushftp10.8.5.12.java.21
-  IMAGE_NAME: crushftp
+  IMAGE_NAME: crushftpdmz
 
 jobs:
   build:
