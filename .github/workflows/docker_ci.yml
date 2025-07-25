@@ -32,7 +32,7 @@ jobs:
         run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Podman Login
-        run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login ${{ secrets.CI_REGISTRY }} -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
+        run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login --tls-verify=false ${{ secrets.CI_REGISTRY }} -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
 
       - name: Build Podman image
         run: podman build -t ${{ secrets.CI_REGISTRY }}/crushftp:$TAG .
