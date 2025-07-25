@@ -4,13 +4,18 @@ on:
   push:
     branches:
       - main
-      
+
 env:
   TAG: crushftp10.8.5.12.java.21
+  IMAGE_NAME: crushftp
 
 jobs:
   build:
     runs-on: self-hosted
+
+    permissions:
+      packages: write
+      contents: read
 
     steps:
       - name: Clone repository into the GitHub Actions runner 
@@ -22,20 +27,20 @@ jobs:
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
-      
+
       - name: Preparing clean build directory
         run: |
           rm -rf build/
           mkdir -p build/
-      
+
       - name: Unzip CrushFTP build and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
-      - name: Podman Login
-        run: echo "${{ secrets.CI_REGISTRY_PASSWORD }}" | podman login --tls-verify=false ${{ secrets.CI_REGISTRY }} -u "${{ secrets.CI_REGISTRY_USER }}" --password-stdin
+      - name: Podman Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Podman image
-        run: podman build -t ${{ secrets.CI_REGISTRY }}/crushftp:$TAG .
+        run: podman build -t ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$TAG .
 
       - name: Push Podman image
-        run: podman push --tls-verify=false ${{ secrets.CI_REGISTRY }}/crushftp:$TAG
+        run: podman push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$TAG
