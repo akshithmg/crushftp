@@ -36,7 +36,7 @@ jobs:
         run: unzip -o -q CrushFTP10.zip -d build/
 
       - name: Podman Login to GitHub Container Registry
-        run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com/crushftpdmz-docker-local -u ${{ secrets.JFROG_USERNAME }} --password-stdin
+        run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com -u ${{ secrets.JFROG_USERNAME }} --password-stdin
 
       - name: Build Podman image
         run: docker build -t artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG .
