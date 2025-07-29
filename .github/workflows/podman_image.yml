@@ -18,30 +18,28 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repo
+      - name: Clone repository into the GitHub Actions runner 
         uses: actions/checkout@v4
 
-      - name: Download CrushFTP10.zip with retry and validation
+      - name: Download CrushFTP10.zip with retry and validation from crushftp.com
         run: |
           set -euo pipefail
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
-
-      - name: Prepare build directory
+      - name: Preparing clean build directory
         run: |
           rm -rf build/
           mkdir -p build/
-
-      - name: Unzip CrushFTP build
+          
+      - name: Unzip CrushFTP build and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
-      - name: Docker Login to Artifactory
-        id: login
-        run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com/docker-aucrushftpdmz-local -u "${{ secrets.JFROG_USERNAME }}" --password-stdin
+      - name: Podman Login to GitHub Container Registry
+        run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com/docker-aucrushftpdmz-local -u ${{ secrets.JFROG_USERNAME }} --password-stdin
 
-      - name: Build Docker image
-        run: docker build --no-cache -t artifactory.server01.com/docker-aucrushftpdmz-local/$IMAGE_NAME:$TAG .
+      - name: Build Podman image
+        run: docker build -t artifactory.server01.com/docker-aucrushftpdmz-local/$IMAGE_NAME:$TAG .
 
-      - name: Push Docker image
+      - name: Push Podman image
         run: docker push artifactory.server01.com/docker-aucrushftpdmz-local/$IMAGE_NAME:$TAG
