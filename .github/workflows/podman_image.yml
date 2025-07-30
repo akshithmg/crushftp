@@ -39,7 +39,7 @@ jobs:
         run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com -u ${{ secrets.JFROG_USERNAME }} --password-stdin
 
       - name: Build Podman image
-        run: docker build -t artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG .
+        run: docker --debug build -t artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG .
 
       - name: Push Podman image
         run: docker push artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG
