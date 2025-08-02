@@ -11,35 +11,36 @@ env:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     permissions:
       packages: write
       contents: read
 
     steps:
-      - name: Clone repository into the GitHub Actions runner 
+      - name: Clone repository into the GitHub Actions runner
         uses: actions/checkout@v4
 
-      - name: Download CrushFTP10.zip with retry and validation from crushftp.com
+      - name: Download CrushFTP10.zip with retry and validation
         run: |
           set -euo pipefail
           wget --retry-connrefused --waitretry=5 --read-timeout=20 --timeout=15 -t 5 -O CrushFTP10.zip https://www.crushftp.com/early10/CrushFTP10.zip
           echo "Validating CrushFTP10.zip integrity..."
           unzip -t CrushFTP10.zip
+
       - name: Preparing clean build directory
         run: |
           rm -rf build/
           mkdir -p build/
-          
+
       - name: Unzip CrushFTP build and cleanup zip file
         run: unzip -o -q CrushFTP10.zip -d build/
 
-      - name: Podman Login to GitHub Container Registry
-        run: echo "${{ secrets.JFROG_PASSWORD }}" | docker login artifactory.server01.com -u ${{ secrets.JFROG_USERNAME }} --password-stdin
+      - name: Docker login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Podman image
-        run: docker build -t artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG .
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$TAG .
 
-      - name: Push Podman image
-        run: docker push artifactory.server01.com/crushftpdmz-docker-local/$IMAGE_NAME:$TAG
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$TAG
